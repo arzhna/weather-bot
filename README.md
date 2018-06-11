@@ -9,6 +9,6 @@ Register as crontab with root account as follows.
 ```
 
 ```
-{Min} {Hour} * * 1-5 /home/arzhna/wttr-bot/wttr_bot.py /home/arzhna/wttr-bot/wttr_bot.conf
+{Min} {Hour} * * 1-5 /home/arzhna/weather-bot/bot.py /home/arzhna/weather-bot/bot.conf
 ```
 
