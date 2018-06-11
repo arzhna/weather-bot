@@ -26,7 +26,7 @@ class DustGrade(Enum):
     UNKNOWN = DustClass(8, '알수없음', -1, -1, -1, -1, ':zipper_mouth_face:')
 
 
-def __get_dust_grade(value, type=10):
+def _get_dust_grade(value, type=10):
     for grade in DustGrade:
         if type == 10:
             if value >= grade.value.min10 and value <= grade.value.max10:
@@ -38,7 +38,7 @@ def __get_dust_grade(value, type=10):
     return DustGrade.UNKNOWN.value
 
 
-def __get_url(conf):
+def _get_url(conf):
     return '{}?stationName={}&dataTerm={}&pageNo={}&numOfRows={}' \
            '&ServiceKey={}&ver={}&_returnType={}'.format(
             conf.dust_url, conf.station, conf.data_term, conf.page_no,
@@ -48,14 +48,14 @@ def __get_url(conf):
 
 
 def get_data(conf):
-    dust_url = __get_url(conf)
+    dust_url = _get_url(conf)
     res = requests.get(dust_url)
     if res.status_code == 200:
         raw_data = res.json()
         pm10 = int(raw_data['list'][0]['pm10Value'])
         pm25 = int(raw_data['list'][0]['pm25Value'])
-        pm10_grade = __get_dust_grade(pm10, 10)
-        pm25_grade = __get_dust_grade(pm25, 25)
+        pm10_grade = _get_dust_grade(pm10, 10)
+        pm25_grade = _get_dust_grade(pm25, 25)
 
         return '미세먼지(PM10)\t: {} {} {}µg/m³\n' \
                '초미세먼지(PM2.5)\t: {} {} {}µg/m³'.format(
