@@ -17,5 +17,5 @@ if __name__ == '__main__':
 
     dust_data = dust.get_data(conf)
     if dust_data:
-        fmt_data = dooray.get_fmt_data(conf, dust_data, code_block=False)
+        fmt_data = dooray.get_fmt_data(conf, dust_data)
         dooray.send_data(conf, fmt_data)

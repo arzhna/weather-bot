@@ -17,6 +17,7 @@ def get_data(conf, current=False):
     res = requests.get(wttr_url)
     if res.status_code == 200:
         reduce_lines = 0 if current else 4
-        return __remove_last_lines_from_string(res.content, reduce_lines)
+        return '```%s```' % \
+               __remove_last_lines_from_string(res.content, reduce_lines)
     else:
         return None

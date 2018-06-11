@@ -9,10 +9,9 @@ def send_data(conf, wttr_data):
         print json.dumps(res.json(), indent=4, separators=(',', ': '))
 
 
-def get_fmt_data(conf, data, code_block=True):
-    fmt_data = '```%s```' % data if code_block else data
+def get_fmt_data(conf, data):
     return {
         'botName': conf.bot_name,
         'botIconImage': conf.icon_url,
-        'text': fmt_data
+        'text': data
     }
