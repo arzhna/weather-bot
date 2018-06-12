@@ -38,6 +38,36 @@ def _get_dust_grade(value, type=10):
     return DustGrade.UNKNOWN.value
 
 
+def _get_default_best_value(type=10):
+    best = DustGrade.BEST.value
+    return (best.max10 + best.min10) / 2 \
+        if type == 10 else (best.max25 + best.min25) / 2
+
+
+def _get_dust_value(raw_data, type=10):
+    type_str = 'pm10Value' if type == 10 else 'pm25Value'
+
+    if raw_data['list'][0][type_str] == '-':
+        return _get_default_best_value(type)
+    else:
+        return int(raw_data['list'][0][type_str])
+
+
+def _get_dust_type_name(type=10):
+    return '미세먼지(PM10)' if type == 10 else '초미세먼지(PM25)'
+
+
+def _get_fmt_data(raw_data):
+    dust_types = [10, 25]
+    dust_data = ''
+    for type in dust_types:
+        value = _get_dust_value(raw_data, type)
+        grade = _get_dust_grade(value, type)
+        dust_data += '{}\t: {} {} {}µg/m³\n'.format(
+            _get_dust_type_name(type), grade.emoji, grade.name, value)
+    return dust_data
+
+
 def _get_url(conf):
     return '{}?stationName={}&dataTerm={}&pageNo={}&numOfRows={}' \
            '&ServiceKey={}&ver={}&_returnType={}'.format(
@@ -50,16 +80,4 @@ def _get_url(conf):
 def get_data(conf):
     dust_url = _get_url(conf)
     res = requests.get(dust_url)
-    if res.status_code == 200:
-        raw_data = res.json()
-        pm10 = int(raw_data['list'][0]['pm10Value'])
-        pm25 = int(raw_data['list'][0]['pm25Value'])
-        pm10_grade = _get_dust_grade(pm10, 10)
-        pm25_grade = _get_dust_grade(pm25, 25)
-
-        return '미세먼지(PM10)\t: {} {} {}µg/m³\n' \
-               '초미세먼지(PM2.5)\t: {} {} {}µg/m³'.format(
-                pm10_grade.emoji, pm10_grade.name, pm10,
-                pm25_grade.emoji, pm25_grade.name, pm25)
-    else:
-        return None
+    return _get_fmt_data(res.json()) if res.status_code == 200 else None
