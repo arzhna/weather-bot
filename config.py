@@ -5,7 +5,7 @@ class Config:
     def __init__(self, bot_name, hook_url, icon_url,
                  wttr_url, wttr_opt, location,
                  dust_url, station, data_term, service_key, version,
-                 debug=False):
+                 logfile, debug=False):
         self.bot_name = bot_name
         self.hook_url = hook_url
         self.icon_url = icon_url
@@ -22,6 +22,7 @@ class Config:
         self.version = version
         self.return_type = 'json'
 
+        self.logfile = logfile
         self.debug = debug
 
     def __repr__(self):
@@ -37,12 +38,13 @@ class Config:
         data_term = {}
         service_key = {}
         version = {}
+        logfile = {}
         debug = {}
         '''.format(self.bot_name, self.hook_url, self.icon_url,
                    self.wttr_url, self.wttr_opt, self.location,
                    self.dust_url, self.station, self.data_term,
                    self.service_key, self.version,
-                   self.debug)
+                   self.logfile, self.debug)
 
     @staticmethod
     def load(path):
@@ -71,12 +73,13 @@ class Config:
             service_key = parser.get(__section_dust, 'service_key')
             version = parser.get(__section_dust, 'version')
 
+            logfile = parser.get(__section_debug, 'logfile')
             debug = parser.get(__section_debug, 'debug')
 
             return Config(bot_name, hook_url, icon_url,
                           wttr_url, wttr_opt, location,
                           dust_url, station, data_term, service_key, version,
-                          debug)
+                          logfile, debug)
 
         except ConfigParser.NoOptionError as e:
             print("%s" % e.message)
