@@ -1,10 +1,12 @@
 from config import Config
 from flask import Flask
+from flask import g
 from flask import jsonify
 
 import dust
 import logger
 import sys
+import time
 import wttr
 
 
@@ -25,9 +27,16 @@ def get_dust():
     return jsonify(text=dust_data, response_type="inChannel")
 
 
+@app.before_request
+def before_request():
+    g.start = time.time()
+
+
 @app.after_request
 def after(response):
-    app.logger.info(response.status_code)
+    elapsed_time = time.time() - g.start
+    msg = '%d - %.03f' % (response.status_code, elapsed_time)
+    app.logger.info(msg)
     return response
 
 
